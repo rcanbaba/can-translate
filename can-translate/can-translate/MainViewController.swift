@@ -7,6 +7,7 @@
 
 import Cocoa
 import AppKit
+import SnapKit
 
 class MainViewController: NSViewController {
     

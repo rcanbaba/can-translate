@@ -6,6 +6,8 @@
 //
 
 import Cocoa
+import AppKit
+import SnapKit
 
 //@main
 class AppDelegate: NSObject, NSApplicationDelegate {
