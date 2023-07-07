@@ -24,10 +24,16 @@ class MainViewController: NSViewController {
     private lazy var textField: NSTextField = {
         let textField = NSTextField()
         textField.isEditable = true
-        textField.isBordered = false
-        textField.backgroundColor = NSColor.black
+        textField.isBordered = true
+        textField.backgroundColor = NSColor.white
         textField.focusRingType = .none
+        textField.textColor = NSColor.black
         return textField
+    }()
+    
+    private lazy var button: NSButton = {
+        let button = NSButton(title: "Submit", target: self, action: #selector(buttonPressed))
+        return button
     }()
     
     override func loadView() {
@@ -48,6 +54,12 @@ class MainViewController: NSViewController {
             make.width.equalTo(300)
             make.height.equalTo(50)
         }
+        
+        selectedView.addSubview(button)
+        button.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-20)
+        }
     }
     
     override func viewDidLoad() {
@@ -58,4 +70,9 @@ class MainViewController: NSViewController {
         textField.becomeFirstResponder()
     }
 
+    
+    @objc private func buttonPressed() {
+        let inputText = textField.stringValue
+        print(inputText)
+    }
 }
