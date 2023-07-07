@@ -14,8 +14,8 @@ class MainViewController: NSViewController {
     private lazy var selectedView: NSView = {
         let view = NSView()
         view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor.red.cgColor
-        view.layer?.borderColor = NSColor.yellow.cgColor
+        view.layer?.backgroundColor = NSColor.Custom.blue.cgColor
+        view.layer?.borderColor = NSColor.Custom.white.cgColor
         view.layer?.borderWidth = 1.0
         view.layer?.cornerRadius = 25.0
         return view
@@ -25,13 +25,27 @@ class MainViewController: NSViewController {
         let textField = NSTextField()
         textField.isEditable = true
         textField.isBordered = true
-        textField.backgroundColor = NSColor.white
-        textField.focusRingType = .none
-        textField.textColor = NSColor.black
+        textField.backgroundColor = NSColor.Custom.white
+        textField.focusRingType = .exterior
+        textField.textColor = NSColor.Custom.black
         return textField
     }()
     
-    private lazy var button: NSButton = {
+    private lazy var backImageView: NSImageView = {
+        let imageView = NSImageView()
+        imageView.imageScaling = .scaleAxesIndependently
+        imageView.image = NSImage(named: NSImage.Name("background-image"))
+        return imageView
+    }()
+    
+    private lazy var logoImageView: NSImageView = {
+        let imageView = NSImageView()
+        imageView.imageScaling = .scaleAxesIndependently
+        imageView.image = NSImage(named: NSImage.Name("superlive_header_icon_white"))
+        return imageView
+    }()
+    
+    private lazy var submitButton: NSButton = {
         let button = NSButton(title: "Submit", target: self, action: #selector(buttonPressed))
         return button
     }()
@@ -39,7 +53,18 @@ class MainViewController: NSViewController {
     override func loadView() {
         view = NSView(frame: NSMakeRect(0.0, 0.0, 800.0, 600.0))
         let label = NSTextField(labelWithString: "Powered by a KPI lover")
+        
+        view.addSubview(backImageView)
+        backImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         view.addSubview(label)
+        
+        view.addSubview(logoImageView)
+        logoImageView.snp.makeConstraints { make in
+            make.trailing.top.equalToSuperview().inset(24)
+        }
+        
         
         view.addSubview(selectedView)
         selectedView.snp.makeConstraints { make in
@@ -55,8 +80,8 @@ class MainViewController: NSViewController {
             make.height.equalTo(50)
         }
         
-        selectedView.addSubview(button)
-        button.snp.makeConstraints { make in
+        selectedView.addSubview(submitButton)
+        submitButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
         }
@@ -66,7 +91,6 @@ class MainViewController: NSViewController {
         super.viewDidLoad()
 
         self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = NSColor.Custom.buttonBlue.cgColor
         textField.becomeFirstResponder()
         clearTextField()
     }
@@ -74,6 +98,21 @@ class MainViewController: NSViewController {
     private func clearTextField(){
         textField.stringValue = ""
     }
+
+    
+    
+    /* test string:
+     
+     family_invitation_accept_popup_contribution_deleted    the contribution points you have provided to your current family will be deleted    mevcut ailene sağladığın katkı puanları silinecek    poin kontribusi yang telah Anda berikan kepada keluarga Anda saat ini akan dihapus    سيتم حذف نقاط المساهمة التي قدمتها لعائلتك الحالية        los puntos de contribución que has proporcionado a tu familia actual serán eliminados    i punti contributo che hai fornito alla tua attuale famiglia verranno cancellati    les points de contribution que vous avez fournis à votre famille actuelle seront supprimés    Die Beitragspunkte, die Sie Ihrer aktuellen Familie zur Verfügung gestellt haben, werden gelöscht    баллы вклада, которые вы предоставили своей текущей семье, будут удалены                family_invitation_accept_popup_contribution_deleted
+     
+     
+     
+     family_inivation_accept_pop_up_cancel    Cancel    Vazgeç    Membatalkan    الغاء    Cancelar    Cancelar    Annulla    Annuler    Abbrechen    Отмена                family_inivation_accept_pop_up_cancel
+     */
+}
+
+// MARK: - Input Parsing
+extension MainViewController {
     
     private func parseInputString(text: String) {
         let parts = text.components(separatedBy: "\t")
@@ -85,7 +124,6 @@ class MainViewController: NSViewController {
             clearTextField()
             return
         }
-
         
     }
     
@@ -93,6 +131,21 @@ class MainViewController: NSViewController {
         inputArray.count == Constants.expectedColumnCount
     }
     
+}
+
+// MARK: - Actions
+extension MainViewController {
+    @objc private func buttonPressed() {
+        let inputText = textField.stringValue
+        print(inputText)
+        parseInputString(text: inputText)
+        clearTextField()
+    }
+    
+}
+
+// MARK: - Alerts
+extension MainViewController {
     private func presentAlert(title: String, description: String) {
         let alert = NSAlert()
         alert.messageText = title
@@ -101,24 +154,5 @@ class MainViewController: NSViewController {
         alert.addButton(withTitle: "OK")
         alert.runModal()
     }
-
     
-    @objc private func buttonPressed() {
-        let inputText = textField.stringValue
-        print(inputText)
-        parseInputString(text: inputText)
-        clearTextField()
-    }
-    
-    
-    
-    
-    /* test string:
-     
-     family_invitation_accept_popup_contribution_deleted    the contribution points you have provided to your current family will be deleted    mevcut ailene sağladığın katkı puanları silinecek    poin kontribusi yang telah Anda berikan kepada keluarga Anda saat ini akan dihapus    سيتم حذف نقاط المساهمة التي قدمتها لعائلتك الحالية        los puntos de contribución que has proporcionado a tu familia actual serán eliminados    i punti contributo che hai fornito alla tua attuale famiglia verranno cancellati    les points de contribution que vous avez fournis à votre famille actuelle seront supprimés    Die Beitragspunkte, die Sie Ihrer aktuellen Familie zur Verfügung gestellt haben, werden gelöscht    баллы вклада, которые вы предоставили своей текущей семье, будут удалены                family_invitation_accept_popup_contribution_deleted
-     
-     
-     
-     family_inivation_accept_pop_up_cancel    Cancel    Vazgeç    Membatalkan    الغاء    Cancelar    Cancelar    Annulla    Annuler    Abbrechen    Отмена                family_inivation_accept_pop_up_cancel
-     */
 }

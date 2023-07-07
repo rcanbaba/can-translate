@@ -37,6 +37,9 @@ extension NSColor {
         static let superBlue = NSColor("0691EA")
         static let blue = NSColor("007AFF")
         static let buttonBlue = NSColor("28A3EC")
+        
+        static let white = NSColor("FFFFFF")
+        static let black = NSColor("000000")
     }
 }
 
