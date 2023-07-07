@@ -76,9 +76,31 @@ class MainViewController: NSViewController {
     }
     
     private func parseInputString(text: String) {
+        let parts = text.components(separatedBy: "\t")
+        let emptyPartsEliminated = parts.filter({!$0.isEmpty})
+        
+        //TODO: burda hangi indexin empty geldiğine göre şu dilin çevirisi eksik diye alert basalım
+        guard checkInputFormatIsOk(emptyPartsEliminated) else {
+            presentAlert(title: "Error", description: "The input text could not be parsed correctly. Please make sure it's in the correct format.")
+            clearTextField()
+            return
+        }
+
         
     }
     
+    private func checkInputFormatIsOk(_ inputArray: [String]) -> Bool {
+        inputArray.count == Constants.expectedColumnCount
+    }
+    
+    private func presentAlert(title: String, description: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = description
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
 
     
     @objc private func buttonPressed() {
@@ -95,5 +117,8 @@ class MainViewController: NSViewController {
      
      family_invitation_accept_popup_contribution_deleted    the contribution points you have provided to your current family will be deleted    mevcut ailene sağladığın katkı puanları silinecek    poin kontribusi yang telah Anda berikan kepada keluarga Anda saat ini akan dihapus    سيتم حذف نقاط المساهمة التي قدمتها لعائلتك الحالية        los puntos de contribución que has proporcionado a tu familia actual serán eliminados    i punti contributo che hai fornito alla tua attuale famiglia verranno cancellati    les points de contribution que vous avez fournis à votre famille actuelle seront supprimés    Die Beitragspunkte, die Sie Ihrer aktuellen Familie zur Verfügung gestellt haben, werden gelöscht    баллы вклада, которые вы предоставили своей текущей семье, будут удалены                family_invitation_accept_popup_contribution_deleted
      
+     
+     
+     family_inivation_accept_pop_up_cancel    Cancel    Vazgeç    Membatalkan    الغاء    Cancelar    Cancelar    Annulla    Annuler    Abbrechen    Отмена                family_inivation_accept_pop_up_cancel
      */
 }

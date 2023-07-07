@@ -13,6 +13,7 @@
 		B4ECE17C2A574D8900862A59 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECE17B2A574D8900862A59 /* MainViewController.swift */; };
 		B4ECE17F2A574F2600862A59 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B4ECE17E2A574F2600862A59 /* SnapKit */; };
 		B4ECE1812A58062B00862A59 /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECE1802A58062B00862A59 /* NSColorExtension.swift */; };
+		B4ECE1832A585C4100862A59 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECE1822A585C4100862A59 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		B4ECE1792A57496D00862A59 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B4ECE17B2A574D8900862A59 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B4ECE1802A58062B00862A59 /* NSColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtension.swift; sourceTree = "<group>"; };
+		B4ECE1822A585C4100862A59 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				B4ECE1792A57496D00862A59 /* main.swift */,
 				B4ECE16D2A57461600862A59 /* Assets.xcassets */,
 				B4ECE1722A57461600862A59 /* can_translate.entitlements */,
+				B4ECE1822A585C4100862A59 /* Constants.swift */,
 			);
 			path = "can-translate";
 			sourceTree = "<group>";
@@ -143,6 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4ECE1832A585C4100862A59 /* Constants.swift in Sources */,
 				B4ECE17C2A574D8900862A59 /* MainViewController.swift in Sources */,
 				B4ECE16A2A57461500862A59 /* AppDelegate.swift in Sources */,
 				B4ECE1812A58062B00862A59 /* NSColorExtension.swift in Sources */,
