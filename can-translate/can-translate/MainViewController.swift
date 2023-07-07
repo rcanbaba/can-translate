@@ -21,16 +21,32 @@ class MainViewController: NSViewController {
         return view
     }()
     
+    private lazy var textField: NSTextField = {
+        let textField = NSTextField()
+        textField.isEditable = true
+        textField.isBordered = false
+        textField.backgroundColor = NSColor.black
+        textField.focusRingType = .none
+        return textField
+    }()
+    
     override func loadView() {
         view = NSView(frame: NSMakeRect(0.0, 0.0, 800.0, 600.0))
-        let label = NSTextField(labelWithString: "Another Controller")
+        let label = NSTextField(labelWithString: "Powered by a KPI lover")
         view.addSubview(label)
         
         view.addSubview(selectedView)
         selectedView.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalToSuperview()
+            make.width.equalTo(400)
+            make.height.equalToSuperview().multipliedBy(0.8)
             make.center.equalToSuperview()
+        }
+        
+        selectedView.addSubview(textField)
+        textField.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(300)
+            make.height.equalTo(50)
         }
     }
     
@@ -38,7 +54,8 @@ class MainViewController: NSViewController {
         super.viewDidLoad()
 
         self.view.wantsLayer = true
-        self.view.layer?.backgroundColor = NSColor.blue.cgColor
+        self.view.layer?.backgroundColor = NSColor.Custom.buttonBlue.cgColor
+        textField.becomeFirstResponder()
     }
 
 }

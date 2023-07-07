@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         window.contentViewController = viewController
         window.center()
-        window.title = "No Storyboard Window"
+        window.title = "SuperTranslate"
         window.makeKeyAndOrderFront(nil)
     }
 
