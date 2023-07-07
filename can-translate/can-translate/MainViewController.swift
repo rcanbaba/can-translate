@@ -68,11 +68,32 @@ class MainViewController: NSViewController {
         self.view.wantsLayer = true
         self.view.layer?.backgroundColor = NSColor.Custom.buttonBlue.cgColor
         textField.becomeFirstResponder()
+        clearTextField()
     }
+    
+    private func clearTextField(){
+        textField.stringValue = ""
+    }
+    
+    private func parseInputString(text: String) {
+        
+    }
+    
 
     
     @objc private func buttonPressed() {
         let inputText = textField.stringValue
         print(inputText)
+        parseInputString(text: inputText)
+        clearTextField()
     }
+    
+    
+    
+    
+    /* test string:
+     
+     family_invitation_accept_popup_contribution_deleted    the contribution points you have provided to your current family will be deleted    mevcut ailene sağladığın katkı puanları silinecek    poin kontribusi yang telah Anda berikan kepada keluarga Anda saat ini akan dihapus    سيتم حذف نقاط المساهمة التي قدمتها لعائلتك الحالية        los puntos de contribución que has proporcionado a tu familia actual serán eliminados    i punti contributo che hai fornito alla tua attuale famiglia verranno cancellati    les points de contribution que vous avez fournis à votre famille actuelle seront supprimés    Die Beitragspunkte, die Sie Ihrer aktuellen Familie zur Verfügung gestellt haben, werden gelöscht    баллы вклада, которые вы предоставили своей текущей семье, будут удалены                family_invitation_accept_popup_contribution_deleted
+     
+     */
 }
