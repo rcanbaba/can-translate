@@ -28,6 +28,8 @@ class MainViewController: NSViewController {
         textField.backgroundColor = NSColor.Custom.white
         textField.focusRingType = .exterior
         textField.textColor = NSColor.Custom.black
+        let placeholder = "Put translations here!"
+        textField.placeholderAttributedString = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: NSColor.lightGray])
     // TODO: UI ı düzeltince bunu da düşün
      //   textField.maximumNumberOfLines = 20
         return textField
@@ -53,8 +55,47 @@ class MainViewController: NSViewController {
     }()
     
     private lazy var pathButton: NSButton = {
-        let button = NSButton(title: "Path", target: self, action: #selector(pathButtonPressed))
+        let button = NSButton(title: "Open", target: self, action: #selector(pathButtonPressed))
         return button
+    }()
+    
+    private lazy var checkButton: NSButton = {
+        let button = NSButton(title: "Check", target: self, action: #selector(checkButtonPressed))
+        return button
+    }()
+    
+    private lazy var infoStackView: NSStackView = {
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 10
+        stackView.distribution = .fillEqually
+
+        let firstInfoLabel = NSTextField(labelWithString: "1. Set .json files directory using Path Buttonç")
+        let secondInfoLabel = NSTextField(labelWithString: "2. Copy translation row from language file.")
+        let thirdInfoLabel = NSTextField(labelWithString: "3. Use check button for check translation is missing.")
+        let fourthInfoLabel = NSTextField(labelWithString: "4. Use submit button to write key-values to .json files.")
+        
+        stackView.addArrangedSubview(firstInfoLabel)
+        stackView.addArrangedSubview(secondInfoLabel)
+        stackView.addArrangedSubview(thirdInfoLabel)
+        stackView.addArrangedSubview(fourthInfoLabel)
+        
+        return stackView
+    }()
+    
+    private lazy var buttonStackView: NSStackView = {
+        let stackView = NSStackView()
+        stackView.orientation = .horizontal
+        stackView.alignment = .top
+        stackView.spacing = 40
+        stackView.distribution = .fillEqually
+        
+        stackView.addArrangedSubview(pathButton)
+        stackView.addArrangedSubview(checkButton)
+        stackView.addArrangedSubview(submitButton)
+        
+        return stackView
     }()
     
     override func loadView() {
@@ -77,7 +118,8 @@ class MainViewController: NSViewController {
         selectedView.snp.makeConstraints { make in
             make.width.equalTo(400)
             make.height.equalToSuperview().multipliedBy(0.8)
-            make.center.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(120)
         }
         
         selectedView.addSubview(textField)
@@ -87,17 +129,20 @@ class MainViewController: NSViewController {
             make.height.equalTo(50)
         }
         
-        selectedView.addSubview(submitButton)
-        submitButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(40)
+        selectedView.addSubview(buttonStackView)
+        buttonStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
+        }
+
+        view.addSubview(infoStackView)
+        infoStackView.snp.makeConstraints { make in
+            make.leading.equalTo(selectedView.snp.trailing).offset(24)
+            make.trailing.equalToSuperview().inset(16)
+            make.top.equalTo(selectedView.snp.top).inset(12)
         }
         
-        selectedView.addSubview(pathButton)
-        pathButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(40)
-            make.bottom.equalToSuperview().offset(-20)
-        }
+        
     }
     
     override func viewDidLoad() {
@@ -203,6 +248,10 @@ extension MainViewController {
     
     @objc private func pathButtonPressed() {
         openPanel()
+    }
+    
+    @objc private func checkButtonPressed() {
+        //TODO:
     }
     
 }
