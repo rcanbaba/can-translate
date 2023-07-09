@@ -28,6 +28,8 @@ class MainViewController: NSViewController {
         textField.backgroundColor = NSColor.Custom.white
         textField.focusRingType = .exterior
         textField.textColor = NSColor.Custom.black
+    // TODO: UI ı düzeltince bunu da düşün
+     //   textField.maximumNumberOfLines = 20
         return textField
     }()
     
@@ -46,7 +48,12 @@ class MainViewController: NSViewController {
     }()
     
     private lazy var submitButton: NSButton = {
-        let button = NSButton(title: "Submit", target: self, action: #selector(buttonPressed))
+        let button = NSButton(title: "Submit", target: self, action: #selector(submitButtonPressed))
+        return button
+    }()
+    
+    private lazy var pathButton: NSButton = {
+        let button = NSButton(title: "Path", target: self, action: #selector(pathButtonPressed))
         return button
     }()
     
@@ -82,7 +89,13 @@ class MainViewController: NSViewController {
         
         selectedView.addSubview(submitButton)
         submitButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().inset(40)
+            make.bottom.equalToSuperview().offset(-20)
+        }
+        
+        selectedView.addSubview(pathButton)
+        pathButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(40)
             make.bottom.equalToSuperview().offset(-20)
         }
     }
@@ -133,13 +146,63 @@ extension MainViewController {
     
 }
 
+// MARK: - File Operations
+extension MainViewController {
+    
+    private func openPanel() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+
+        panel.begin { (result) -> Void in
+            if result == .OK {
+                guard let url = panel.urls.first else { return }
+                
+                let fileManager = FileManager.default
+                let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+
+                //TODO: burda tutulan .json ların bizimkilerle aynı isimde mi bi kontrol ekleyelim 10 tane mi vs
+                var jsonFiles: [URL] = []
+                while let fileURL = enumerator?.nextObject() as? URL {
+                    do {
+                        let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
+                        if resourceValues.isRegularFile == true, fileURL.pathExtension == "json" {
+                            jsonFiles.append(fileURL)
+                        }
+                    } catch {
+                        print("Error retrieving resource values for file at \(fileURL): \(error)")
+                    }
+                }
+
+                // Now jsonFiles contains URLs for all json files in the selected directory
+                for jsonFile in jsonFiles {
+                    do {
+                        let data = try Data(contentsOf: jsonFile)
+                        let json = try JSONSerialization.jsonObject(with: data, options: [])
+                        print(json)
+                    } catch {
+                        print("Error reading json file at \(jsonFile): \(error)")
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+
 // MARK: - Actions
 extension MainViewController {
-    @objc private func buttonPressed() {
+    @objc private func submitButtonPressed() {
         let inputText = textField.stringValue
         print(inputText)
         parseInputString(text: inputText)
         clearTextField()
+    }
+    
+    @objc private func pathButtonPressed() {
+        openPanel()
     }
     
 }
