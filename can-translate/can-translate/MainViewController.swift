@@ -21,8 +21,8 @@ class MainViewController: NSViewController {
         return view
     }()
     
-    private lazy var textField: NSTextField = {
-        let textField = NSTextField()
+    private lazy var inputTextField: EditableTextField = {
+        let textField = EditableTextField()
         textField.isEditable = true
         textField.isBordered = true
         textField.backgroundColor = NSColor.Custom.white
@@ -134,8 +134,8 @@ class MainViewController: NSViewController {
             make.leading.equalToSuperview().inset(120)
         }
         
-        selectedView.addSubview(textField)
-        textField.snp.makeConstraints { make in
+        selectedView.addSubview(inputTextField)
+        inputTextField.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(48)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(100)
@@ -169,12 +169,12 @@ class MainViewController: NSViewController {
         super.viewDidLoad()
 
         self.view.wantsLayer = true
-        textField.becomeFirstResponder()
+        inputTextField.becomeFirstResponder()
         clearTextField()
     }
     
     private func clearTextField(){
-        textField.stringValue = ""
+        inputTextField.stringValue = ""
     }
 
     
@@ -273,7 +273,7 @@ extension MainViewController {
 // MARK: - Actions
 extension MainViewController {
     @objc private func submitButtonPressed() {
-        let inputText = textField.stringValue
+        let inputText = inputTextField.stringValue
         print(inputText)
         parseInputString(text: inputText)
         clearTextField()
