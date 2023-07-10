@@ -71,7 +71,7 @@ class MainViewController: NSViewController {
         stackView.spacing = 10
         stackView.distribution = .fillEqually
 
-        let firstInfoLabel = NSTextField(labelWithString: "1. Set .json files directory using Path Buttonç")
+        let firstInfoLabel = NSTextField(labelWithString: "1. Set .json files directory using Path Button.")
         let secondInfoLabel = NSTextField(labelWithString: "2. Copy translation row from language file.")
         let thirdInfoLabel = NSTextField(labelWithString: "3. Use check button for check translation is missing.")
         let fourthInfoLabel = NSTextField(labelWithString: "4. Use submit button to write key-values to .json files.")
@@ -96,6 +96,18 @@ class MainViewController: NSViewController {
         stackView.addArrangedSubview(submitButton)
         
         return stackView
+    }()
+    
+    private lazy var pathTextField: NSTextField = {
+        let textField = NSTextField()
+        textField.isEditable = false
+        textField.isBordered = true
+        textField.backgroundColor = NSColor.Custom.white
+        textField.focusRingType = .exterior
+        textField.textColor = NSColor.Custom.black
+        let placeholder = "~/...path"
+        textField.placeholderAttributedString = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: NSColor.lightGray])
+        return textField
     }()
     
     override func loadView() {
@@ -124,9 +136,17 @@ class MainViewController: NSViewController {
         
         selectedView.addSubview(textField)
         textField.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.top.equalToSuperview().inset(48)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.height.equalTo(100)
+        }
+        
+        selectedView.addSubview(pathTextField)
+        pathTextField.snp.makeConstraints { make in
             make.width.equalTo(300)
-            make.height.equalTo(50)
+            make.height.equalTo(20)
+            make.leading.equalToSuperview().inset(48)
+            make.bottom.equalToSuperview().inset(96)
         }
         
         selectedView.addSubview(buttonStackView)
@@ -204,32 +224,45 @@ extension MainViewController {
             if result == .OK {
                 guard let url = panel.urls.first else { return }
                 
-                let fileManager = FileManager.default
-                let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
+                self.setURLPathString( url.path)
+                self.getFilesInURL(url)
+            }
+        }
+    }
+    
+    private func setURLPathString(_ path: String) {
+        pathTextField.stringValue = path
+    }
+    
+    private func getFilesInURL(_ url: URL) {
+        let fileManager = FileManager.default
+        let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
 
-                //TODO: burda tutulan .json ların bizimkilerle aynı isimde mi bi kontrol ekleyelim 10 tane mi vs
-                var jsonFiles: [URL] = []
-                while let fileURL = enumerator?.nextObject() as? URL {
-                    do {
-                        let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
-                        if resourceValues.isRegularFile == true, fileURL.pathExtension == "json" {
-                            jsonFiles.append(fileURL)
-                        }
-                    } catch {
-                        print("Error retrieving resource values for file at \(fileURL): \(error)")
-                    }
+        //TODO: burda tutulan .json ların bizimkilerle aynı isimde mi bi kontrol ekleyelim 10 tane mi vs
+        var jsonFiles: [URL] = []
+        while let fileURL = enumerator?.nextObject() as? URL {
+            do {
+                let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
+                if resourceValues.isRegularFile == true, fileURL.pathExtension == "json" {
+                    jsonFiles.append(fileURL)
                 }
-
-                // Now jsonFiles contains URLs for all json files in the selected directory
-                for jsonFile in jsonFiles {
-                    do {
-                        let data = try Data(contentsOf: jsonFile)
-                        let json = try JSONSerialization.jsonObject(with: data, options: [])
-                        print(json)
-                    } catch {
-                        print("Error reading json file at \(jsonFile): \(error)")
-                    }
-                }
+            } catch {
+                print("Error retrieving resource values for file at \(fileURL): \(error)")
+            }
+        }
+        
+        readJsonFiles(jsonFiles)
+    }
+    
+    private func readJsonFiles(_ jsonFiles: [URL]) {
+        // Now jsonFiles contains URLs for all json files in the selected directory
+        for jsonFile in jsonFiles {
+            do {
+                let data = try Data(contentsOf: jsonFile)
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                print(json)
+            } catch {
+                print("Error reading json file at \(jsonFile): \(error)")
             }
         }
     }
