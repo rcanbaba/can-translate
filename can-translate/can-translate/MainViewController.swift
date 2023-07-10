@@ -75,11 +75,15 @@ class MainViewController: NSViewController {
         let secondInfoLabel = NSTextField(labelWithString: "2. Copy translation row from language file.")
         let thirdInfoLabel = NSTextField(labelWithString: "3. Use check button for check translation is missing.")
         let fourthInfoLabel = NSTextField(labelWithString: "4. Use submit button to write key-values to .json files.")
+        let fifthInfoLabel = NSTextField(labelWithString: "5. Do not forget to push changes in translation .json files.")
+        let sixthInfoLabel = NSTextField(labelWithString: "6. Do not forget to upload translation files to isolated environment.")
         
         stackView.addArrangedSubview(firstInfoLabel)
         stackView.addArrangedSubview(secondInfoLabel)
         stackView.addArrangedSubview(thirdInfoLabel)
         stackView.addArrangedSubview(fourthInfoLabel)
+        stackView.addArrangedSubview(fifthInfoLabel)
+        stackView.addArrangedSubview(sixthInfoLabel)
         
         return stackView
     }()
@@ -106,6 +110,18 @@ class MainViewController: NSViewController {
         textField.focusRingType = .exterior
         textField.textColor = NSColor.Custom.black
         let placeholder = "~/...path"
+        textField.placeholderAttributedString = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: NSColor.lightGray])
+        return textField
+    }()
+    
+    private lazy var environmentURLTextField: NSTextField = {
+        let textField = NSTextField()
+        textField.isEditable = true
+        textField.isBordered = true
+        textField.backgroundColor = NSColor.Custom.white
+        textField.focusRingType = .exterior
+        textField.textColor = NSColor.Custom.black
+        let placeholder = "https://api-..."
         textField.placeholderAttributedString = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: NSColor.lightGray])
         return textField
     }()
@@ -141,11 +157,17 @@ class MainViewController: NSViewController {
             make.height.equalTo(100)
         }
         
+        selectedView.addSubview(environmentURLTextField)
+        environmentURLTextField.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(196)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.height.equalTo(20)
+        }
+        
         selectedView.addSubview(pathTextField)
         pathTextField.snp.makeConstraints { make in
-            make.width.equalTo(300)
             make.height.equalTo(20)
-            make.leading.equalToSuperview().inset(48)
+            make.leading.trailing.equalToSuperview().inset(24)
             make.bottom.equalToSuperview().inset(96)
         }
         
