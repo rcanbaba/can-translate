@@ -30,8 +30,8 @@ class MainViewController: NSViewController {
         textField.textColor = NSColor.Custom.black
         let placeholder = "Put translations here!"
         textField.placeholderAttributedString = NSAttributedString(string: placeholder, attributes: [NSAttributedString.Key.foregroundColor: NSColor.lightGray])
-    // TODO: UI ı düzeltince bunu da düşün
-     //   textField.maximumNumberOfLines = 20
+        // TODO: UI ı düzeltince bunu da düşün
+        //   textField.maximumNumberOfLines = 20
         return textField
     }()
     
@@ -70,11 +70,11 @@ class MainViewController: NSViewController {
         stackView.alignment = .leading
         stackView.spacing = 10
         stackView.distribution = .fillEqually
-
-        let firstInfoLabel = NSTextField(labelWithString: "1. Set .json files directory using Path Button.")
+        
+        let firstInfoLabel = NSTextField(labelWithString: "1. Set .json files directory using Open Button.")
         let secondInfoLabel = NSTextField(labelWithString: "2. Copy translation row from language file.")
-        let thirdInfoLabel = NSTextField(labelWithString: "3. Use check button for check translation is missing.")
-        let fourthInfoLabel = NSTextField(labelWithString: "4. Use submit button to write key-values to .json files.")
+        let thirdInfoLabel = NSTextField(labelWithString: "3. Use Check Button to check translation is missing.")
+        let fourthInfoLabel = NSTextField(labelWithString: "4. Use Submit Button to write key-values to .json files.")
         let fifthInfoLabel = NSTextField(labelWithString: "5. Do not forget to push changes in translation .json files.")
         let sixthInfoLabel = NSTextField(labelWithString: "6. Do not forget to upload translation files to isolated environment.")
         
@@ -176,7 +176,7 @@ class MainViewController: NSViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-20)
         }
-
+        
         view.addSubview(infoStackView)
         infoStackView.snp.makeConstraints { make in
             make.leading.equalTo(selectedView.snp.trailing).offset(24)
@@ -189,7 +189,7 @@ class MainViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view.wantsLayer = true
         inputTextField.becomeFirstResponder()
         clearTextField()
@@ -198,7 +198,11 @@ class MainViewController: NSViewController {
     private func clearTextField(){
         inputTextField.stringValue = ""
     }
-
+    
+    private func clearFilePathTextField() {
+        pathTextField.stringValue = ""
+    }
+    
     
     
     /* test string:
@@ -241,12 +245,12 @@ extension MainViewController {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-
+        
         panel.begin { (result) -> Void in
             if result == .OK {
                 guard let url = panel.urls.first else { return }
                 
-                self.setURLPathString( url.path)
+                self.setURLPathString(url.path)
                 self.getFilesInURL(url)
             }
         }
@@ -259,7 +263,7 @@ extension MainViewController {
     private func getFilesInURL(_ url: URL) {
         let fileManager = FileManager.default
         let enumerator = fileManager.enumerator(at: url, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants])
-
+        
         //TODO: burda tutulan .json ların bizimkilerle aynı isimde mi bi kontrol ekleyelim 10 tane mi vs
         var jsonFiles: [URL] = []
         while let fileURL = enumerator?.nextObject() as? URL {
@@ -269,22 +273,49 @@ extension MainViewController {
                     jsonFiles.append(fileURL)
                 }
             } catch {
-                print("Error retrieving resource values for file at \(fileURL): \(error)")
+                presentAlert(title: "Error: path", description: "Error retrieving resource values for file at \(fileURL): \(error)")
+                clearFilePathTextField()
+                return
+            }
+        }
+        checkJsonFilesIsProperThenRead(fileURLs: jsonFiles)
+    }
+    
+    private func checkJsonFilesIsProperThenRead(fileURLs: [URL]) {
+        if fileURLs.isEmpty {
+            presentAlert(title: "Error: json files", description: "There is no json file in the given path")
+            clearFilePathTextField()
+            return
+        }
+        
+        let fileURLPath = fileURLs.compactMap({$0.lastPathComponent})
+        
+        var errorMessage: String = ""
+        Constants.supportedJsonFiles.forEach { item in
+            if !fileURLPath.contains(item) {
+                errorMessage.append("\(item) \n")
             }
         }
         
-        readJsonFiles(jsonFiles)
+        if errorMessage != "" {
+            presentAlert(title: "Error: json files", description: errorMessage + "\n are missing in the given path.")
+            clearFilePathTextField()
+        } else {
+            readJsonFiles(fileURLs)
+        }
     }
     
+    
+    
     private func readJsonFiles(_ jsonFiles: [URL]) {
-        // Now jsonFiles contains URLs for all json files in the selected directory
         for jsonFile in jsonFiles {
             do {
                 let data = try Data(contentsOf: jsonFile)
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 print(json)
             } catch {
-                print("Error reading json file at \(jsonFile): \(error)")
+                presentAlert(title: "Error: json", description: "Error reading json file at \(jsonFile): \(error)")
+                clearFilePathTextField()
             }
         }
     }
