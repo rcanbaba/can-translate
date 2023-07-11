@@ -22,5 +22,18 @@ class Constants {
         "localization_ru.json",
         "localization_tr.json"
     ]
+    
+    static let languagesFileOrdered: [String] = [
+        "English",
+        "Turkish",
+        "Indonesian",
+        "Arabic",
+        "Portuguese",
+        "Spanish",
+        "Italian",
+        "French",
+        "German",
+        "Russian"
+    ]
 
 }

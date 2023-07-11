@@ -126,6 +126,8 @@ class MainViewController: NSViewController {
         return textField
     }()
     
+    private var inputStrings: [String] = []
+    
     override func loadView() {
         view = NSView(frame: NSMakeRect(0.0, 0.0, 800.0, 600.0))
         let label = NSTextField(labelWithString: "Powered by a KPI lover")
@@ -212,6 +214,9 @@ class MainViewController: NSViewController {
      
      
      family_inivation_accept_pop_up_cancel    Cancel    Vazgeç    Membatalkan    الغاء    Cancelar    Cancelar    Annulla    Annuler    Abbrechen    Отмена                family_inivation_accept_pop_up_cancel
+     
+     
+     Platinum    Platinum    Platinum        Platinum    Platina    Platino    Platino    Platinum     Platin    Платиновый                Platinum
      */
 }
 
@@ -220,16 +225,35 @@ extension MainViewController {
     
     private func parseInputString(text: String) {
         let parts = text.components(separatedBy: "\t")
-        let emptyPartsEliminated = parts.filter({!$0.isEmpty})
         
-        //TODO: burda hangi indexin empty geldiğine göre şu dilin çevirisi eksik diye alert basalım
-        guard checkInputFormatIsOk(emptyPartsEliminated) else {
-            presentAlert(title: "Error", description: "The input text could not be parsed correctly. Please make sure it's in the correct format.")
-            clearTextField()
-            return
+        let isError = checkInputArrayError(parts: parts)
+        
+        if isError != "" {
+            presentAlert(title: "Error: input", description: isError + "translations are missing")
+        } else {
+            let emptyPartsEliminated = parts.filter({!$0.isEmpty})
+            
+            guard checkInputFormatIsOk(emptyPartsEliminated) else {
+                presentAlert(title: "Error", description: "The input text could not be parsed correctly. Please make sure it's in the correct format.")
+                clearTextField()
+                return
+            }
+            
+            inputStrings = emptyPartsEliminated
         }
         
     }
+    
+    private func checkInputArrayError(parts: [String]) -> String {
+        var errorMessage: String = ""
+        for i in Constants.languagesFileOrdered.indices {
+            if parts[i].isEmpty {
+                errorMessage.append(Constants.languagesFileOrdered[i] + "\n")
+            }
+        }
+        return errorMessage
+    }
+    
     
     private func checkInputFormatIsOk(_ inputArray: [String]) -> Bool {
         inputArray.count == Constants.expectedColumnCount
@@ -301,7 +325,7 @@ extension MainViewController {
             presentAlert(title: "Error: json files", description: errorMessage + "\n are missing in the given path.")
             clearFilePathTextField()
         } else {
-            readJsonFiles(fileURLs)
+            readJsonFiles4(fileURLs)
         }
     }
     
@@ -320,16 +344,91 @@ extension MainViewController {
         }
     }
     
+    private func readJsonFiles2(_ jsonFiles: [URL]) {
+        for jsonFile in jsonFiles {
+            do {
+                let data = try Data(contentsOf: jsonFile)
+                if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    // Append your new values here
+                    json["newKey"] = "newValue"
+                    
+                    // Convert the dictionary back to JSON
+                    let newData = try JSONSerialization.data(withJSONObject: json, options: [])
+                    
+                    // Write the new data back to the file
+                    try newData.write(to: jsonFile)
+                }
+            } catch {
+                presentAlert(title: "Error: json", description: "Error reading or writing json file at \(jsonFile): \(error)")
+                clearFilePathTextField()
+            }
+        }
+    }
+
+    
+    private func readJsonFiles3(_ jsonFiles: [URL]) {
+        for jsonFile in jsonFiles {
+            do {
+                let data = try Data(contentsOf: jsonFile)
+                if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    // Append your new values here
+                    json["newKey"] = "newValue"
+
+                    // Convert the dictionary back to JSON
+                    let newData = try JSONSerialization.data(withJSONObject: json, options: [])
+                    
+                    DispatchQueue.main.async {
+                        // Ask the user where to save the modified file
+                        let savePanel = NSSavePanel()
+                        savePanel.nameFieldStringValue = jsonFile.lastPathComponent
+                        savePanel.begin { (result) in
+                            if result == .OK, let targetURL = savePanel.url {
+                                do {
+                                    try newData.write(to: targetURL)
+                                } catch {
+                                    self.presentAlert(title: "Error: json", description: "Error writing json file at \(targetURL): \(error)")
+                                    self.clearFilePathTextField()
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.presentAlert(title: "Error: json", description: "Error reading json file at \(jsonFile): \(error)")
+                    self.clearFilePathTextField()
+                }
+            }
+        }
+    }
+    
+    private func readJsonFiles4(_ jsonFiles: [URL]) {
+        for jsonFile in jsonFiles {
+            do {
+                let data = try Data(contentsOf: jsonFile)
+                if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                    // Append your new values here
+                    json["newKey"] = "newValue"
+                    
+                    // Convert the dictionary back to JSON
+                    let newData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                    
+                    // Write the new data back to the file
+                    try newData.write(to: jsonFile)
+                }
+            } catch {
+                presentAlert(title: "Error: json", description: "Error reading or writing json file at \(jsonFile): \(error)")
+                clearFilePathTextField()
+            }
+        }
+    }
 }
 
 
 // MARK: - Actions
 extension MainViewController {
     @objc private func submitButtonPressed() {
-        let inputText = inputTextField.stringValue
-        print(inputText)
-        parseInputString(text: inputText)
-        clearTextField()
+
     }
     
     @objc private func pathButtonPressed() {
@@ -337,7 +436,9 @@ extension MainViewController {
     }
     
     @objc private func checkButtonPressed() {
-        //TODO:
+        let inputText = inputTextField.stringValue
+        print(inputText)
+        parseInputString(text: inputText)
     }
     
 }
