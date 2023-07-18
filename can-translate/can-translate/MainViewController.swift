@@ -330,42 +330,6 @@ extension MainViewController {
     }
     
     
-    
-    private func readJsonFiles(_ jsonFiles: [URL]) {
-        for jsonFile in jsonFiles {
-            do {
-                let data = try Data(contentsOf: jsonFile)
-                let json = try JSONSerialization.jsonObject(with: data, options: [])
-                print(json)
-            } catch {
-                presentAlert(title: "Error: json", description: "Error reading json file at \(jsonFile): \(error)")
-                clearFilePathTextField()
-            }
-        }
-    }
-    
-    private func readJsonFiles2(_ jsonFiles: [URL]) {
-        for jsonFile in jsonFiles {
-            do {
-                let data = try Data(contentsOf: jsonFile)
-                if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    // Append your new values here
-                    json["newKey"] = "newValue"
-                    
-                    // Convert the dictionary back to JSON
-                    let newData = try JSONSerialization.data(withJSONObject: json, options: [])
-                    
-                    // Write the new data back to the file
-                    try newData.write(to: jsonFile)
-                }
-            } catch {
-                presentAlert(title: "Error: json", description: "Error reading or writing json file at \(jsonFile): \(error)")
-                clearFilePathTextField()
-            }
-        }
-    }
-
-    
     private func readJsonFiles3(_ jsonFiles: [URL]) {
         for jsonFile in jsonFiles {
             do {
@@ -407,9 +371,70 @@ extension MainViewController {
             do {
                 let data = try Data(contentsOf: jsonFile)
                 if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                    // Append your new values here
-                    json["newKey"] = "newValue"
                     
+                    let fileName = jsonFile.lastPathComponent
+                    
+                    /*
+                     "localization_ar.json",
+                     "localization_de.json",
+                     "localization_es.json",
+                     "localization_en.json",
+                     "localization_fr.json",
+                     "localization_id.json",
+                     "localization_it.json",
+                     "localization_pt.json",
+                     "localization_ru.json",
+                     "localization_tr.json"
+                     
+                     "English", 1
+                     "Turkish", 2
+                     "Indonesian", 3
+                     "Arabic", 4
+                     "Portuguese", 5
+                     "Spanish", 6
+                     "Italian", 7
+                     "French", 8
+                     "German", 9
+                     "Russian" 10
+                     */
+                    
+                    switch fileName {
+                    case Constants.supportedJsonFiles[0]: // ar
+                        json[inputStrings[0]] = inputStrings[4]
+                        
+                    case Constants.supportedJsonFiles[1]: // de
+                        json[inputStrings[0]] = inputStrings[9]
+                        
+                    case Constants.supportedJsonFiles[2]: // es
+                        json[inputStrings[0]] = inputStrings[6]
+                        
+                    case Constants.supportedJsonFiles[3]: // en
+                        json[inputStrings[0]] = inputStrings[1]
+                        
+                    case Constants.supportedJsonFiles[4]: // fr
+                        json[inputStrings[0]] = inputStrings[8]
+                        
+                    case Constants.supportedJsonFiles[5]: // id
+                        json[inputStrings[0]] = inputStrings[3]
+                        
+                    case Constants.supportedJsonFiles[6]: // it
+                        json[inputStrings[0]] = inputStrings[7]
+                        
+                    case Constants.supportedJsonFiles[7]: // pt
+                        json[inputStrings[0]] = inputStrings[5]
+                        
+                    case Constants.supportedJsonFiles[8]: // ru
+                        json[inputStrings[0]] = inputStrings[10]
+                        
+                    case Constants.supportedJsonFiles[9]: // tr
+                        json[inputStrings[0]] = inputStrings[2]
+                        
+                    default:
+                        // Handle any other case
+                        // Add your code here
+                        print("Handling other cases Error")
+                    }
+
                     // Convert the dictionary back to JSON
                     let newData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                     
@@ -422,6 +447,7 @@ extension MainViewController {
             }
         }
     }
+    
 }
 
 
