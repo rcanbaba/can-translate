@@ -11,7 +11,7 @@ import SnapKit
 
 class MainViewController: NSViewController {
     
-    private lazy var selectedView: NSView = {
+    private lazy var contentView: NSView = {
         let view = NSView()
         view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.Custom.blue.cgColor
@@ -88,17 +88,36 @@ class MainViewController: NSViewController {
         return stackView
     }()
     
-    private lazy var buttonStackView: NSStackView = {
+    private lazy var mainStackView: NSStackView = {
         let stackView = NSStackView()
-        stackView.orientation = .horizontal
-        stackView.alignment = .top
-        stackView.spacing = 40
-        stackView.distribution = .fillEqually
-        
-        stackView.addArrangedSubview(pathButton)
-        stackView.addArrangedSubview(checkButton)
-        stackView.addArrangedSubview(submitButton)
-        
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 20
+        stackView.distribution = .equalSpacing
+        return stackView
+    }()
+    
+    private lazy var inputStackView: NSStackView = {
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 20
+        return stackView
+    }()
+    
+    private lazy var pathStackView: NSStackView = {
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 20
+        return stackView
+    }()
+    
+    private lazy var uploadStackView: NSStackView = {
+        let stackView = NSStackView()
+        stackView.orientation = .vertical
+        stackView.alignment = .leading
+        stackView.spacing = 20
         return stackView
     }()
     
@@ -143,47 +162,59 @@ class MainViewController: NSViewController {
             make.trailing.top.equalToSuperview().inset(24)
         }
         
-        
-        view.addSubview(selectedView)
-        selectedView.snp.makeConstraints { make in
+        view.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
             make.width.equalTo(400)
             make.height.equalToSuperview().multipliedBy(0.8)
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(120)
         }
         
-        selectedView.addSubview(inputTextField)
-        inputTextField.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(48)
+        contentView.addSubview(mainStackView)
+        mainStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(24)
+            make.top.bottom.equalToSuperview().inset(40)
+        }
+        
+        mainStackView.addArrangedSubview(inputStackView)
+        mainStackView.addArrangedSubview(pathStackView)
+        mainStackView.addArrangedSubview(uploadStackView)
+        
+        // input
+        inputStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+        }
+        inputStackView.addArrangedSubview(inputTextField)
+        inputStackView.addArrangedSubview(checkButton)
+        inputTextField.snp.makeConstraints { make in
             make.height.equalTo(100)
         }
         
-        selectedView.addSubview(environmentURLTextField)
-        environmentURLTextField.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(196)
-            make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(20)
+        // open path
+        pathStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
         }
-        
-        selectedView.addSubview(pathTextField)
+        pathStackView.addArrangedSubview(pathTextField)
+        pathStackView.addArrangedSubview(pathButton)
         pathTextField.snp.makeConstraints { make in
-            make.height.equalTo(20)
-            make.leading.trailing.equalToSuperview().inset(24)
-            make.bottom.equalToSuperview().inset(96)
+            make.leading.trailing.equalToSuperview()
         }
         
-        selectedView.addSubview(buttonStackView)
-        buttonStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-20)
+        // url submit
+        uploadStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+        }
+        uploadStackView.addArrangedSubview(environmentURLTextField)
+        uploadStackView.addArrangedSubview(submitButton)
+        environmentURLTextField.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
         }
         
         view.addSubview(infoStackView)
         infoStackView.snp.makeConstraints { make in
-            make.leading.equalTo(selectedView.snp.trailing).offset(24)
+            make.leading.equalTo(contentView.snp.trailing).offset(24)
             make.trailing.equalToSuperview().inset(16)
-            make.top.equalTo(selectedView.snp.top).inset(12)
+            make.top.equalTo(contentView.snp.top).inset(12)
         }
         
         
@@ -370,10 +401,10 @@ extension MainViewController {
         for jsonFile in jsonFiles {
             do {
                 let data = try Data(contentsOf: jsonFile)
-                if var json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                     
                     let fileName = jsonFile.lastPathComponent
-                    let json = getJsonItem(filename: fileName)
+                    let json = getJsonItem(filename: fileName, json: json)
                     
                     // Convert the dictionary back to JSON
                     let newData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
@@ -412,45 +443,43 @@ extension MainViewController {
      "German", 9
      "Russian" 10
      */
-    private func getJsonItem(filename: String) -> [String : Any] {
-        
-        
-        var jsonItem = [String : Any]()
+    private func getJsonItem(filename: String, json: [String : Any]) -> [String : Any] {
+        var json = json
         switch filename {
         case Constants.supportedJsonFiles[0]: // ar
-            jsonItem[inputStrings[0]] = inputStrings[4]
+            json[inputStrings[0]] = inputStrings[4]
             
         case Constants.supportedJsonFiles[1]: // de
-            jsonItem[inputStrings[0]] = inputStrings[9]
+            json[inputStrings[0]] = inputStrings[9]
             
         case Constants.supportedJsonFiles[2]: // es
-            jsonItem[inputStrings[0]] = inputStrings[6]
+            json[inputStrings[0]] = inputStrings[6]
             
         case Constants.supportedJsonFiles[3]: // en
-            jsonItem[inputStrings[0]] = inputStrings[1]
+            json[inputStrings[0]] = inputStrings[1]
             
         case Constants.supportedJsonFiles[4]: // fr
-            jsonItem[inputStrings[0]] = inputStrings[8]
+            json[inputStrings[0]] = inputStrings[8]
             
         case Constants.supportedJsonFiles[5]: // id
-            jsonItem[inputStrings[0]] = inputStrings[3]
+            json[inputStrings[0]] = inputStrings[3]
             
         case Constants.supportedJsonFiles[6]: // it
-            jsonItem[inputStrings[0]] = inputStrings[7]
+            json[inputStrings[0]] = inputStrings[7]
             
         case Constants.supportedJsonFiles[7]: // pt
-            jsonItem[inputStrings[0]] = inputStrings[5]
+            json[inputStrings[0]] = inputStrings[5]
             
         case Constants.supportedJsonFiles[8]: // ru
-            jsonItem[inputStrings[0]] = inputStrings[10]
+            json[inputStrings[0]] = inputStrings[10]
             
         case Constants.supportedJsonFiles[9]: // tr
-            jsonItem[inputStrings[0]] = inputStrings[2]
+            json[inputStrings[0]] = inputStrings[2]
             
         default:
             print("Handling other cases Error")
         }
-        return jsonItem
+        return json
     }
     
 }

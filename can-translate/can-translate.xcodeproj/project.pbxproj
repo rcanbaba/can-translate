@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B44D12802A68319C00F52B86 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44D127F2A68319C00F52B86 /* NetworkManager.swift */; };
 		B4ECE16A2A57461500862A59 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECE1692A57461500862A59 /* AppDelegate.swift */; };
 		B4ECE16E2A57461600862A59 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4ECE16D2A57461600862A59 /* Assets.xcassets */; };
 		B4ECE17A2A57496D00862A59 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECE1792A57496D00862A59 /* main.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B44D127F2A68319C00F52B86 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		B4ECE1662A57461500862A59 /* can-translate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "can-translate.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4ECE1692A57461500862A59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4ECE16D2A57461600862A59 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				B4ECE1842A5C0FC800862A59 /* EditableTextField.swift */,
 				B4ECE1802A58062B00862A59 /* NSColorExtension.swift */,
 				B4ECE17B2A574D8900862A59 /* MainViewController.swift */,
+				B44D127F2A68319C00F52B86 /* NetworkManager.swift */,
 				B4ECE1822A585C4100862A59 /* Constants.swift */,
 				B4ECE1792A57496D00862A59 /* main.swift */,
 				B4ECE16D2A57461600862A59 /* Assets.xcassets */,
@@ -152,6 +155,7 @@
 				B4ECE1832A585C4100862A59 /* Constants.swift in Sources */,
 				B4ECE17C2A574D8900862A59 /* MainViewController.swift in Sources */,
 				B4ECE16A2A57461500862A59 /* AppDelegate.swift in Sources */,
+				B44D12802A68319C00F52B86 /* NetworkManager.swift in Sources */,
 				B4ECE1812A58062B00862A59 /* NSColorExtension.swift in Sources */,
 				B4ECE17A2A57496D00862A59 /* main.swift in Sources */,
 				B4ECE1852A5C0FC800862A59 /* EditableTextField.swift in Sources */,
